@@ -2,7 +2,7 @@
 title: Hello, Quarto
 date: "2012-04-06"
 tags: 
-    - quarto
+    - writing
 format: hugo-md
 jupyter: python3
 ---

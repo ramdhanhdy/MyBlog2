@@ -13,5 +13,8 @@
   },
   "themes/hugo-winston-theme/exampleSite/content/hello-quarto/index.qmd": {
     "index.md": "f0b3ef8f"
+  },
+  "content/marketing-analysis/index.ipynb": {
+    "index.md": "ae94445d"
   }
 }

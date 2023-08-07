@@ -1,11 +1,15 @@
 ---
-title: Hello, Quarto
+title: "Marketing Response: A not Comprehensive Analysis"
 date: "2012-04-06"
 tags: 
     - writing
-format: hugo-md
+format: 
+    hugo-md:
+        toc: true
 jupyter: python3
 ---
+
+-   <a href="#polar-axis" id="toc-polar-axis">Polar Axis</a>
 
 ## Polar Axis
 
