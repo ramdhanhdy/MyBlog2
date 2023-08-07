@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>More Traffic, More Mystery? A Web Visit Paradox - Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/favicon.png">
+  <link rel="canonical" href="/posts/language-perfect/" />
+    
+    
+    <link rel="stylesheet" href="/css/style.min.d41725281f6d1b155a12186ef9b677419114d108544a6ef85d58fa859be9f65c.css">
+    <link rel="stylesheet" href="/assets/css/extended.min.9729f28a5087b689b946e103d96abd63bfd37b1417effa251dbf798312e3fba5.css">
+
+  
+    <meta name="description" content="An Application of Johnson Neuman Interval Analysis on Marketing Campaign Data"/>
+    <meta property="og:title" content="More Traffic, More Mystery? A Web Visit Paradox"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="/posts/language-perfect/"/>
+    <meta property="og:image" content="/images/cctv2.jpeg"/>
+    <meta property="og:description" content="An Application of Johnson Neuman Interval Analysis on Marketing Campaign Data"/>
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:site" content="@zerostaticio"/>
+    <meta name="twitter:creator" content="@zerostaticio"/>
+  
+
+  
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&amp;display=swap" rel="stylesheet">
+  
+
+  
+</head>
+
+
+
+
+<body class='page frame page-blog-single'>
+  <div id="menu-main-mobile" class="menu-main-mobile">
+    <ul class="menu">
+        
+        
+            
+                <li class="menu-item-posts">
+                    <a href="/posts/">Posts</a>
+                </li>
+            
+        
+            
+                <li class="menu-item-categories">
+                    <a href="/tags/">Categories</a>
+                </li>
+            
+        
+    </ul>
+</div>
+  <div id="wrapper" class="wrapper">
+    <div class='header'>
+  <a class="header-logo" href="/">Home</a>
+  <div class="menu-main">
+    <ul>
+      
+      
+      
+      
+      <li class="menu-item-posts ">
+        <a href="/posts/">
+          
+          <span>Posts</span>
+        </a>
+      </li>
+      
+      
+      
+      <li class="menu-item-categories ">
+        <a href="/tags/">
+          
+          <span>Categories</span>
+        </a>
+      </li>
+      
+    </ul>
+  </div>
+  <div id="toggle-menu-main-mobile" class="hamburger-trigger">
+    <button class="hamburger">Menu</button>
+  </div>
+</div>
+    
+  <div class="blog">
+    
+    <div class="intro">
+      <h1>More Traffic, More Mystery? A Web Visit Paradox<span class="dot">.</span></h1>
+      
+      <img alt="CCTV Camera" src="/images/cctv2.jpeg" />
+      
+    </div>
+    <div class="content">
+      <h2 id="executive-summary">Executive Summary</h2>
+<p>In the evolving e-commerce landscape, the understanding of customer behavior has been recognized as paramount. A comprehensive analysis of a marketing campaign data has been conducted to offer insights into the factors influencing customer responses to campaigns. The emphasis has been placed on variables such as spending habits, purchase recency, and website visit frequency. The findings have revealed:</p>
+<ol>
+<li>A positive relationship between the frequency of web visits and a customer&rsquo;s response was observed. However, this relationship has been nuanced by the total spending of the customer, emphasizing the necessity to approach customer behavior with a holistic perspective.</li>
+<li>The diminishing effect of total spending with increased web visits suggests a complex interaction between engagement and expenditure.</li>
+<li>A model, deemed reliable through metrics such as AIC, PCP, and Tjur&rsquo;s R2, has been used to validate the insights.</li>
+</ol>
+<p>From a strategic viewpoint, businesses are advised not only to drive web traffic but also to ensure that these visits lead to meaningful engagements and purchases.</p>
+<h2 id="1-introduction">1. Introduction</h2>
+<p>The advent of the digital age has ushered in a renewed understanding of consumer behavior. As a significant majority of transactions have transitioned online, the need to discern what drives a customer to respond to a campaign or finalize a purchase has become paramount.</p>
+<p>In this report, a detailed exploration into the intricacies of customer responses has been undertaken. Insights have been drawn from a comprehensive dataset that encapsulates various facets of customer behavior. Through the exploratory data analysis, influential factors have been highlighted, new perspectives on traditionally overlooked variables have been presented, and a nuanced relationship between website engagement and spending has been showcased.</p>
+<p>As the report is navigated, the complexities of customer behavior, the interplay between various influential factors, and recommendations on how these insights can be harnessed by businesses for optimized marketing campaigns will be revealed.</p>
+<h2 id="2-technical-setup">2. Technical Setup</h2>
+<h3 id="python">Python</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1">#data processing</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">datetime</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">math</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">functools</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">pointbiserialr</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">chi2_contingency</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">plotly.graph_objects</span> <span class="k">as</span> <span class="nn">go</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">plotly.express</span> <span class="k">as</span> <span class="nn">px</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">plotly.figure_factory</span> <span class="k">as</span> <span class="nn">ff</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">plotly.subplots</span> <span class="kn">import</span> <span class="n">make_subplots</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">sys</span>
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">r</span><span class="s2">&#34;D:\Project\rpy2_testing\src&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">my_utils</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">warnings</span>
+</span></span><span class="line"><span class="cl"><span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+</span></span></code></pre></div><h3 id="r">R</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;R_HOME&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;C:/Program Files/R/R-4.3.1&#39;</span>  
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># import rpy2&#39;s package module</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">rpy2.robjects.packages</span> <span class="kn">import</span> <span class="n">importr</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">rpy2.robjects.packages</span> <span class="k">as</span> <span class="nn">rpackages</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">rpy2.robjects.vectors</span> <span class="kn">import</span> <span class="n">StrVector</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">rpy2.ipython</span> <span class="kn">import</span> <span class="n">html</span>
+</span></span><span class="line"><span class="cl"><span class="n">html</span><span class="o">.</span><span class="n">html_rdataframe</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">html</span><span class="o">.</span><span class="n">html_rdataframe</span><span class="p">,</span> <span class="n">table_class</span><span class="o">=</span><span class="s2">&#34;docutils&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1">#RUn to install R packages if not installed yet</span>
+</span></span><span class="line"><span class="cl"><span class="n">utils</span> <span class="o">=</span> <span class="n">importr</span><span class="p">(</span><span class="s1">&#39;utils&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">base</span> <span class="o">=</span> <span class="n">importr</span><span class="p">(</span><span class="s1">&#39;base&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># select a mirror for R packages</span>
+</span></span><span class="line"><span class="cl"><span class="n">utils</span><span class="o">.</span><span class="n">chooseCRANmirror</span><span class="p">(</span><span class="n">ind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># select the first mirror in the list</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># R package names</span>
+</span></span><span class="line"><span class="cl"><span class="n">packnames</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;peformance&#39;</span><span class="p">,</span> <span class="s1">&#39;tidyr&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Selectively install what needs to be install.</span>
+</span></span><span class="line"><span class="cl"><span class="n">names_to_install</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">packnames</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">rpackages</span><span class="o">.</span><span class="n">isinstalled</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names_to_install</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">utils</span><span class="o">.</span><span class="n">install_packages</span><span class="p">(</span><span class="n">StrVector</span><span class="p">(</span><span class="n">names_to_install</span><span class="p">))</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="o">%</span><span class="n">load_ext</span> <span class="n">rpy2</span><span class="o">.</span><span class="n">ipython</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-r" data-lang="r"><span class="line"><span class="cl"><span class="o">%%</span><span class="n">R</span>
+</span></span><span class="line"><span class="cl"><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">library</span><span class="p">(</span><span class="n">ggstatsplot</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">library</span><span class="p">(</span><span class="n">gridExtra</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">library</span><span class="p">(</span><span class="n">kableExtra</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">library</span><span class="p">(</span><span class="n">ggthemr</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">library</span><span class="p">(</span><span class="n">summarytools</span><span class="p">)</span>
+</span></span></code></pre></div><h2 id="3-data-collection-understanding-and-preparation">3. Data Collection, Understanding, and Preparation</h2>
+<h3 id="31-data-collection">3.1. Data Collection</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">df_raw</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data\marketing_campaign.csv&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+</span></span></code></pre></div><h3 id="32-data-understanding">3.2. Data Understanding</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">my_utils</span><span class="o">.</span><span class="n">dataframe_info</span><span class="p">(</span><span class="n">df_raw</span><span class="p">)</span>
+</span></span></code></pre></div><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<pre><code>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
+</code></pre>
+<p></style></p>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Column</th>
+      <th>Data Type</th>
+      <th>Unique Count</th>
+      <th>Unique Sample</th>
+      <th>Missing Values</th>
+      <th>Missing Percentage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>ID</td>
+      <td>int64</td>
+      <td>2240</td>
+      <td>[5524, 2174, 4141, 6182, 5324]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Year_Birth</td>
+      <td>int64</td>
+      <td>59</td>
+      <td>[1957, 1954, 1965, 1984, 1981]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Education</td>
+      <td>object</td>
+      <td>5</td>
+      <td>[Graduation, PhD, Master, Basic, 2n Cycle]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Marital_Status</td>
+      <td>object</td>
+      <td>8</td>
+      <td>[Single, Together, Married, Divorced, Widow]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Income</td>
+      <td>float64</td>
+      <td>1974</td>
+      <td>[58138.0, 46344.0, 71613.0, 26646.0, 58293.0]</td>
+      <td>24</td>
+      <td>1.0714</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Kidhome</td>
+      <td>int64</td>
+      <td>3</td>
+      <td>[0, 1, 2]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Teenhome</td>
+      <td>int64</td>
+      <td>3</td>
+      <td>[0, 1, 2]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Dt_Customer</td>
+      <td>object</td>
+      <td>663</td>
+      <td>[04-09-2012, 08-03-2014, 21-08-2013, 10-02-201...</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Recency</td>
+      <td>int64</td>
+      <td>100</td>
+      <td>[58, 38, 26, 94, 16]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>MntWines</td>
+      <td>int64</td>
+      <td>776</td>
+      <td>[635, 11, 426, 173, 520]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>MntFruits</td>
+      <td>int64</td>
+      <td>158</td>
+      <td>[88, 1, 49, 4, 43]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>MntMeatProducts</td>
+      <td>int64</td>
+      <td>558</td>
+      <td>[546, 6, 127, 20, 118]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>MntFishProducts</td>
+      <td>int64</td>
+      <td>182</td>
+      <td>[172, 2, 111, 10, 46]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>MntSweetProducts</td>
+      <td>int64</td>
+      <td>177</td>
+      <td>[88, 1, 21, 3, 27]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>MntGoldProds</td>
+      <td>int64</td>
+      <td>213</td>
+      <td>[88, 6, 42, 5, 15]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>NumDealsPurchases</td>
+      <td>int64</td>
+      <td>15</td>
+      <td>[3, 2, 1, 5, 4]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>NumWebPurchases</td>
+      <td>int64</td>
+      <td>15</td>
+      <td>[8, 1, 2, 5, 6]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>NumCatalogPurchases</td>
+      <td>int64</td>
+      <td>14</td>
+      <td>[10, 1, 2, 0, 3]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>NumStorePurchases</td>
+      <td>int64</td>
+      <td>14</td>
+      <td>[4, 2, 10, 6, 7]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>NumWebVisitsMonth</td>
+      <td>int64</td>
+      <td>16</td>
+      <td>[7, 5, 4, 6, 8]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>AcceptedCmp3</td>
+      <td>int64</td>
+      <td>2</td>
+      <td>[0, 1]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>AcceptedCmp4</td>
+      <td>int64</td>
+      <td>2</td>
+      <td>[0, 1]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>AcceptedCmp5</td>
+      <td>int64</td>
+      <td>2</td>
+      <td>[0, 1]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>AcceptedCmp1</td>
+      <td>int64</td>
+      <td>2</td>
+      <td>[0, 1]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>AcceptedCmp2</td>
+      <td>int64</td>
+      <td>2</td>
+      <td>[0, 1]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>Complain</td>
+      <td>int64</td>
+      <td>2</td>
+      <td>[0, 1]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>Z_CostContact</td>
+      <td>int64</td>
+      <td>1</td>
+      <td>[3]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>Z_Revenue</td>
+      <td>int64</td>
+      <td>1</td>
+      <td>[11]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>Response</td>
+      <td>int64</td>
+      <td>2</td>
+      <td>[1, 0]</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<p>This dataset contains 29 variables, consisting of integers (int64), floating points (float64), and objects (object).</p>
+<ul>
+<li>
+<p><strong>ID</strong>: A unique identifier for each customer. This feature may not contribute to a predictive model.</p>
+</li>
+<li>
+<p><strong>Year_Birth</strong>: The birth year of customers, which can be converted to &lsquo;Age&rsquo;.</p>
+</li>
+<li>
+<p><strong>Education</strong> and <strong>Marital_Status</strong>: Categorical features that may require one-hot encoding.</p>
+</li>
+<li>
+<p><strong>Income</strong>: A continuous feature indicating customer&rsquo;s income, with some missing values that need to be filled.</p>
+</li>
+<li>
+<p><strong>Kidhome</strong> and <strong>Teenhome</strong>: Integer variables indicating the number of children in the household.</p>
+</li>
+<li>
+<p><strong>Dt_Customer</strong>: The joining date of customers, which may need to be converted to &rsquo;tenure&rsquo; or similar measure.</p>
+</li>
+<li>
+<p><strong>Recency</strong>: Indicates how recently a customer made a purchase. Further context is needed for proper interpretation.</p>
+</li>
+<li>
+<p><strong>MntX</strong> and <strong>NumXPurchases</strong>: Represent the amount spent on different categories of products and the number of purchases made through different channels, respectively.</p>
+</li>
+<li>
+<p><strong>AcceptedCmpX</strong>: Binary features indicating whether the customer accepted offers in different campaigns.</p>
+</li>
+<li>
+<p><strong>Complain</strong>: A binary feature indicating if the customer made a complaint recently.</p>
+</li>
+<li>
+<p><strong>Z_CostContact</strong> and <strong>Z_Revenue</strong>: Features with no variance, hence can be removed.</p>
+</li>
+<li>
+<p><strong>Response</strong>: The binary target variable indicating whether a customer accepted the latest offer.</p>
+</li>
+</ul>
+<h3 id="32-data-preparation">3.2. Data Preparation</h3>
+<p>This phase of the data analysis project focuses on enhancing the quality of the dataset for further stages, which include exploratory data analysis, model building, and interpretation.</p>
+<p>Notes on processing that need to be done are as follows:</p>
+<ol>
+<li>
+<p><strong>Removal of Unnecessary Features</strong>: Features such as &lsquo;ID&rsquo;, &lsquo;Z_CostContact&rsquo;, and &lsquo;Z_Revenue&rsquo;, which do not contribute significant insights for further analysis, are eliminated. &lsquo;ID&rsquo; is merely a distinct identifier, while &lsquo;Z_CostContact&rsquo; and &lsquo;Z_Revenue&rsquo; do not display variability, making them uninformative for a predictive model.</p>
+</li>
+<li>
+<p><strong>Handling Missing Values</strong>: The &lsquo;Income&rsquo; feature contains missing values, which require attention. Depending on the shape of the distribution, these missing values will be addressed using either its mean or median imputation.</p>
+</li>
+<li>
+<p><strong>Derivation of New Features</strong>: New features, &lsquo;Age&rsquo;, &lsquo;Customer_Tenure&rsquo;, and &lsquo;Generation&rsquo;, are engineered from existing ones. &lsquo;Age&rsquo; is calculated by subtracting the &lsquo;Year_Birth&rsquo; from the current year. &lsquo;Customer_Tenure&rsquo; reflects the customer&rsquo;s length of association with the store and is computed from the &lsquo;Dt_Customer&rsquo; feature. The &lsquo;Generation&rsquo; is determined based on the &lsquo;Age&rsquo; feature and the definitions provided by Pew Research Centre. <code>Total_Purchases</code> and <code>Total_Spending</code> are calculated from <code>NumXPurchase</code> and <code>MntX</code> respectively.</p>
+</li>
+<li>
+<p><strong>Encoding of Categorical Variables</strong>: Categorical variables, namely &lsquo;Education&rsquo; and &lsquo;Marital_Status&rsquo;, are encoded into a format suitable for machine learning algorithms. One-hot encoding is a suitable method for this purpose.</p>
+</li>
+<li>
+<p><strong>Scaling of Numeric Features</strong>: The features &lsquo;Income&rsquo;, &lsquo;Recency&rsquo;, &lsquo;MntX&rsquo;, and &lsquo;NumXPurchases&rsquo; exist in different scales. To ensure that no single feature dominates the model. Scaling methods will be implemented later on as pipelines during experimentation since some machine learning models such as XGBoost and Catboost don&rsquo;t require feature scaling. This will be tested during the experimentation later on.</p>
+</li>
+<li>
+<p><strong>Detection and Treatment of Outliers</strong>: Outliers in features such as &lsquo;Income&rsquo;, &lsquo;Recency&rsquo;, &lsquo;MntX&rsquo;, and &lsquo;NumXPurchases&rsquo; can significantly bias the model. Therefore, outlier detection and subsequent treatment, through methods like Z-score or the Interquartile Range (IQR) method, are employed.</p>
+</li>
+</ol>
+<p><strong>footnotes</strong>:</p>
+<blockquote>
+<p>The &lsquo;Generation&rsquo; feature is classified as per the definitions given by the Pew Research Centre:</p>
+<ul>
+<li>The Silent Generation: Born 1928-1945 (76-93 years old)</li>
+<li>Baby Boomers: Born 1946-1964 (57-75 years old)</li>
+<li>Generation X: Born 1965-1980 (41-56 years old)</li>
+<li>Millennials: Born 1981-1996 (25-40 years old)</li>
+<li>Generation Z: Born 1997-2012 (9-24 years old)</li>
+<li>Generation Alpha: Born 2010-2025 (0-11 years old)</li>
+</ul>
+</blockquote>
+<h4 id="321-unnecesary-features-removal-missing-value-handling-and-new-features-generation">3.2.1 Unnecesary Features Removal, Missing Value Handling, and New Features Generation</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">df</span> <span class="o">=</span> <span class="n">df_raw</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 1. Redundant Features Removal</span>
+</span></span><span class="line"><span class="cl"><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="s1">&#39;Z_CostContact&#39;</span><span class="p">,</span> <span class="s1">&#39;Z_Revenue&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 2. Missing Values Handling</span>
+</span></span><span class="line"><span class="cl"><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Income&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Income&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Income&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 3. New Features Derivation</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Calculate Age from Year_Birth</span>
+</span></span><span class="line"><span class="cl"><span class="n">current_year</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span>
+</span></span><span class="line"><span class="cl"><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_year</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Year_Birth&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;Year_Birth&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Calculate Total Purchase</span>
+</span></span><span class="line"><span class="cl"><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Total_Purchases&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;NumDealsPurchases&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;NumWebPurchases&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;NumCatalogPurchases&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;NumStorePurchases&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Calculate Customer_Tenure</span>
+</span></span><span class="line"><span class="cl"><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Dt_Customer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Dt_Customer&#39;</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">-%m-%Y&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">last_recorded_date</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Dt_Customer&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Customer_Tenure&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">last_recorded_date</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Dt_Customer&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">days</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Calculate Total Spending</span>
+</span></span><span class="line"><span class="cl"><span class="n">product_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;MntWines&#39;</span><span class="p">,</span> <span class="s1">&#39;MntFruits&#39;</span><span class="p">,</span> <span class="s1">&#39;MntMeatProducts&#39;</span><span class="p">,</span> <span class="s1">&#39;MntFishProducts&#39;</span><span class="p">,</span> <span class="s1">&#39;MntSweetProducts&#39;</span><span class="p">,</span> <span class="s1">&#39;MntGoldProds&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Total_Spending&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">product_columns</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Create Living_With feature based on Kidhome and Teenhome</span>
+</span></span><span class="line"><span class="cl"><span class="n">conditions</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Kidhome&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Teenhome&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Kidhome&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Teenhome&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Kidhome&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Teenhome&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">choices</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;With_Kids&#39;</span><span class="p">,</span> <span class="s1">&#39;With_Teens&#39;</span><span class="p">,</span> <span class="s1">&#39;With_Kids_and_Teens&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Living_With&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">conditions</span><span class="p">,</span> <span class="n">choices</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;Alone&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Create Is_Parent feature</span>
+</span></span><span class="line"><span class="cl"><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Is_Parent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Kidhome&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Teenhome&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Define generations</span>
+</span></span><span class="line"><span class="cl"><span class="n">conditions</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">76</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">93</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">57</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">75</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">41</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">56</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">25</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">40</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">9</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">24</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">11</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">choices</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Silent_Generation&#39;</span><span class="p">,</span> <span class="s1">&#39;Baby_Boomers&#39;</span><span class="p">,</span> <span class="s1">&#39;Generation_X&#39;</span><span class="p">,</span> <span class="s1">&#39;Millennials&#39;</span><span class="p">,</span> <span class="s1">&#39;Generation_Z&#39;</span><span class="p">,</span> <span class="s1">&#39;Generation_Alpha&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Generation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">conditions</span><span class="p">,</span> <span class="n">choices</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;Unknown&#39;</span><span class="p">)</span>
+</span></span></code></pre></div><h3 id="322-outlier-detection">3.2.2. Outlier Detection</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">num_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">nunique_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">num_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="o">.</span><span class="n">nunique</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;nunique&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="s1">&#39;variables&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">selection</span> <span class="o">=</span> <span class="n">nunique_df</span><span class="p">[</span><span class="n">nunique_df</span><span class="p">[</span><span class="s1">&#39;nunique&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#plotly frame setup</span>
+</span></span><span class="line"><span class="cl"><span class="n">to_plot</span> <span class="o">=</span> <span class="n">num_df</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># number of variables to plot</span>
+</span></span><span class="line"><span class="cl"><span class="n">num_vars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">to_plot</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># calculate number of rows and columns for the subplot grid</span>
+</span></span><span class="line"><span class="cl"><span class="n">plot_nrows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">num_vars</span> <span class="o">/</span> <span class="mi">4</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># create subplot titles</span>
+</span></span><span class="line"><span class="cl"><span class="n">subplot_titles</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">to_plot</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">plot_nrows</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">-</span> <span class="n">num_vars</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># create subplots</span>
+</span></span><span class="line"><span class="cl"><span class="n">fig</span> <span class="o">=</span> <span class="n">make_subplots</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="n">plot_nrows</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">subplot_titles</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">subplot_titles</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># add traces</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">to_plot</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">row</span> <span class="o">=</span> <span class="n">i</span> <span class="o">//</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="n">col</span> <span class="o">=</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">to_plot</span><span class="p">[</span><span class="n">col_name</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">col_name</span><span class="p">),</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="n">col</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">1400</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="s1">&#39;plotly_dark&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Boxplot of Numerical Features&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">showticklabels</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></span></code></pre></div><img src="figures/boxplots.png" width="90%" /> 
+<p><strong>Highlights</strong></p>
+<p>The boxplot above shows that tere are possible outliers on the following features:</p>
+<ul>
+<li>Income, MntFruits, MntMeatProducts, MntSweetProducts, MntGoldProds, MntFishProducts, NumDealsPurchases, NumWebPurchases, NumCatalogPurchases, NumWebVisitsMonth, Age, and TotalSpent</li>
+</ul>
+<p>Before deciding wether outliers found should be remove, let&rsquo;s calculate how many percentage of the data are considered as outliers by the Inter-quartile Range method used by the boxplot</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1">#count outliers</span>
+</span></span><span class="line"><span class="cl"><span class="n">Q1</span> <span class="o">=</span> <span class="n">num_df</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">Q3</span> <span class="o">=</span> <span class="n">num_df</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">IQR</span> <span class="o">=</span> <span class="n">Q3</span><span class="o">-</span><span class="n">Q1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#outlier dataframe</span>
+</span></span><span class="line"><span class="cl"><span class="n">outlier_count</span> <span class="o">=</span> <span class="p">((</span><span class="n">num_df</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">Q1</span><span class="o">-</span><span class="mf">1.5</span><span class="o">*</span><span class="n">IQR</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="n">num_df</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">Q3</span> <span class="o">+</span> <span class="mf">1.5</span><span class="o">*</span><span class="n">IQR</span><span class="p">)))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="c1">#outlier count </span>
+</span></span><span class="line"><span class="cl"><span class="n">outlier_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">outlier_count</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;outlier_count&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="s1">&#39;variable&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">outlier_df</span><span class="p">[</span><span class="s1">&#39;percentage&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">outlier_df</span><span class="p">[</span><span class="s1">&#39;outlier_count&#39;</span><span class="p">]</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">num_df</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span> <span class="c1">#outlier percentage columns</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.precision&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">outlier_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;outlier_count&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">background_gradient</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gist_heat&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">set_caption</span><span class="p">(</span><span class="s1">&#39;Outlier Count&#39;</span><span class="p">)</span>
+</span></span></code></pre></div><style type="text/css">
+#T_c4159_row0_col0, #T_c4159_row0_col1 {
+  background-color: #ffffff;
+  color: #000000;
+}
+#T_c4159_row1_col0, #T_c4159_row1_col1 {
+  background-color: #ff7d00;
+  color: #f1f1f1;
+}
+#T_c4159_row2_col0, #T_c4159_row2_col1 {
+  background-color: #ff5b00;
+  color: #f1f1f1;
+}
+#T_c4159_row3_col0, #T_c4159_row3_col1 {
+  background-color: #ff5500;
+  color: #f1f1f1;
+}
+#T_c4159_row4_col0, #T_c4159_row4_col1 {
+  background-color: #ed3d00;
+  color: #f1f1f1;
+}
+#T_c4159_row5_col0, #T_c4159_row5_col1 {
+  background-color: #c90d00;
+  color: #f1f1f1;
+}
+#T_c4159_row6_col0, #T_c4159_row6_col1 {
+  background-color: #c00100;
+  color: #f1f1f1;
+}
+#T_c4159_row7_col0, #T_c4159_row7_col1, #T_c4159_row8_col0, #T_c4159_row8_col1 {
+  background-color: #ba0000;
+  color: #f1f1f1;
+}
+#T_c4159_row9_col0, #T_c4159_row9_col1 {
+  background-color: #a50000;
+  color: #f1f1f1;
+}
+#T_c4159_row10_col0, #T_c4159_row10_col1 {
+  background-color: #620000;
+  color: #f1f1f1;
+}
+#T_c4159_row11_col0, #T_c4159_row11_col1 {
+  background-color: #270000;
+  color: #f1f1f1;
+}
+#T_c4159_row12_col0, #T_c4159_row12_col1 {
+  background-color: #210000;
+  color: #f1f1f1;
+}
+#T_c4159_row13_col0, #T_c4159_row13_col1 {
+  background-color: #1a0000;
+  color: #f1f1f1;
+}
+#T_c4159_row14_col0, #T_c4159_row14_col1 {
+  background-color: #180000;
+  color: #f1f1f1;
+}
+#T_c4159_row15_col0, #T_c4159_row15_col1, #T_c4159_row16_col0, #T_c4159_row16_col1 {
+  background-color: #090000;
+  color: #f1f1f1;
+}
+#T_c4159_row17_col0, #T_c4159_row17_col1 {
+  background-color: #040000;
+  color: #f1f1f1;
+}
+#T_c4159_row18_col0, #T_c4159_row18_col1, #T_c4159_row19_col0, #T_c4159_row19_col1 {
+  background-color: #030000;
+  color: #f1f1f1;
+}
+#T_c4159_row20_col0, #T_c4159_row20_col1 {
+  background-color: #020000;
+  color: #f1f1f1;
+}
+#T_c4159_row21_col0, #T_c4159_row21_col1, #T_c4159_row22_col0, #T_c4159_row22_col1, #T_c4159_row23_col0, #T_c4159_row23_col1, #T_c4159_row24_col0, #T_c4159_row24_col1, #T_c4159_row25_col0, #T_c4159_row25_col1, #T_c4159_row26_col0, #T_c4159_row26_col1 {
+  background-color: #000000;
+  color: #f1f1f1;
+}
+</style>
+<table id="T_c4159">
+  <caption>Outlier Count</caption>
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_c4159_level0_col0" class="col_heading level0 col0" >outlier_count</th>
+      <th id="T_c4159_level0_col1" class="col_heading level0 col1" >percentage</th>
+    </tr>
+    <tr>
+      <th class="index_name level0" >variable</th>
+      <th class="blank col0" >&nbsp;</th>
+      <th class="blank col1" >&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_c4159_level0_row0" class="row_heading level0 row0" >Response</th>
+      <td id="T_c4159_row0_col0" class="data row0 col0" >334</td>
+      <td id="T_c4159_row0_col1" class="data row0 col1" >14.910714</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row1" class="row_heading level0 row1" >MntSweetProducts</th>
+      <td id="T_c4159_row1_col0" class="data row1 col0" >248</td>
+      <td id="T_c4159_row1_col1" class="data row1 col1" >11.071429</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row2" class="row_heading level0 row2" >MntFruits</th>
+      <td id="T_c4159_row2_col0" class="data row2 col0" >227</td>
+      <td id="T_c4159_row2_col1" class="data row2 col1" >10.133929</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row3" class="row_heading level0 row3" >MntFishProducts</th>
+      <td id="T_c4159_row3_col0" class="data row3 col0" >223</td>
+      <td id="T_c4159_row3_col1" class="data row3 col1" >9.955357</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row4" class="row_heading level0 row4" >MntGoldProds</th>
+      <td id="T_c4159_row4_col0" class="data row4 col0" >207</td>
+      <td id="T_c4159_row4_col1" class="data row4 col1" >9.241071</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row5" class="row_heading level0 row5" >MntMeatProducts</th>
+      <td id="T_c4159_row5_col0" class="data row5 col0" >175</td>
+      <td id="T_c4159_row5_col1" class="data row5 col1" >7.812500</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row6" class="row_heading level0 row6" >AcceptedCmp4</th>
+      <td id="T_c4159_row6_col0" class="data row6 col0" >167</td>
+      <td id="T_c4159_row6_col1" class="data row6 col1" >7.455357</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row7" class="row_heading level0 row7" >AcceptedCmp3</th>
+      <td id="T_c4159_row7_col0" class="data row7 col0" >163</td>
+      <td id="T_c4159_row7_col1" class="data row7 col1" >7.276786</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row8" class="row_heading level0 row8" >AcceptedCmp5</th>
+      <td id="T_c4159_row8_col0" class="data row8 col0" >163</td>
+      <td id="T_c4159_row8_col1" class="data row8 col1" >7.276786</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row9" class="row_heading level0 row9" >AcceptedCmp1</th>
+      <td id="T_c4159_row9_col0" class="data row9 col0" >144</td>
+      <td id="T_c4159_row9_col1" class="data row9 col1" >6.428571</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row10" class="row_heading level0 row10" >NumDealsPurchases</th>
+      <td id="T_c4159_row10_col0" class="data row10 col0" >86</td>
+      <td id="T_c4159_row10_col1" class="data row10 col1" >3.839286</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row11" class="row_heading level0 row11" >MntWines</th>
+      <td id="T_c4159_row11_col0" class="data row11 col0" >35</td>
+      <td id="T_c4159_row11_col1" class="data row11 col1" >1.562500</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row12" class="row_heading level0 row12" >AcceptedCmp2</th>
+      <td id="T_c4159_row12_col0" class="data row12 col0" >30</td>
+      <td id="T_c4159_row12_col1" class="data row12 col1" >1.339286</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row13" class="row_heading level0 row13" >NumCatalogPurchases</th>
+      <td id="T_c4159_row13_col0" class="data row13 col0" >23</td>
+      <td id="T_c4159_row13_col1" class="data row13 col1" >1.026786</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row14" class="row_heading level0 row14" >Complain</th>
+      <td id="T_c4159_row14_col0" class="data row14 col0" >21</td>
+      <td id="T_c4159_row14_col1" class="data row14 col1" >0.937500</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row15" class="row_heading level0 row15" >Income</th>
+      <td id="T_c4159_row15_col0" class="data row15 col0" >8</td>
+      <td id="T_c4159_row15_col1" class="data row15 col1" >0.357143</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row16" class="row_heading level0 row16" >NumWebVisitsMonth</th>
+      <td id="T_c4159_row16_col0" class="data row16 col0" >8</td>
+      <td id="T_c4159_row16_col1" class="data row16 col1" >0.357143</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row17" class="row_heading level0 row17" >NumWebPurchases</th>
+      <td id="T_c4159_row17_col0" class="data row17 col0" >4</td>
+      <td id="T_c4159_row17_col1" class="data row17 col1" >0.178571</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row18" class="row_heading level0 row18" >Age</th>
+      <td id="T_c4159_row18_col0" class="data row18 col0" >3</td>
+      <td id="T_c4159_row18_col1" class="data row18 col1" >0.133929</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row19" class="row_heading level0 row19" >Total_Spending</th>
+      <td id="T_c4159_row19_col0" class="data row19 col0" >3</td>
+      <td id="T_c4159_row19_col1" class="data row19 col1" >0.133929</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row20" class="row_heading level0 row20" >Total_Purchases</th>
+      <td id="T_c4159_row20_col0" class="data row20 col0" >2</td>
+      <td id="T_c4159_row20_col1" class="data row20 col1" >0.089286</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row21" class="row_heading level0 row21" >Customer_Tenure</th>
+      <td id="T_c4159_row21_col0" class="data row21 col0" >0</td>
+      <td id="T_c4159_row21_col1" class="data row21 col1" >0.000000</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row22" class="row_heading level0 row22" >NumStorePurchases</th>
+      <td id="T_c4159_row22_col0" class="data row22 col0" >0</td>
+      <td id="T_c4159_row22_col1" class="data row22 col1" >0.000000</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row23" class="row_heading level0 row23" >Kidhome</th>
+      <td id="T_c4159_row23_col0" class="data row23 col0" >0</td>
+      <td id="T_c4159_row23_col1" class="data row23 col1" >0.000000</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row24" class="row_heading level0 row24" >Recency</th>
+      <td id="T_c4159_row24_col0" class="data row24 col0" >0</td>
+      <td id="T_c4159_row24_col1" class="data row24 col1" >0.000000</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row25" class="row_heading level0 row25" >Teenhome</th>
+      <td id="T_c4159_row25_col0" class="data row25 col0" >0</td>
+      <td id="T_c4159_row25_col1" class="data row25 col1" >0.000000</td>
+    </tr>
+    <tr>
+      <th id="T_c4159_level0_row26" class="row_heading level0 row26" >Is_Parent</th>
+      <td id="T_c4159_row26_col0" class="data row26 col0" >0</td>
+      <td id="T_c4159_row26_col1" class="data row26 col1" >0.000000</td>
+    </tr>
+  </tbody>
+</table>
+<p>The table above presents the number of data points identified as outliers via the Interquartile Range (IQR) method for each variable. Additionally, the percentage of outliers in relation to the overall observations is displayed in the second column.</p>
+<p>A significant percentage of data labeled as outliers is noticed in several variables. Such outliers may not indeed be outliers but could be representative of the inherent variability within the population parameter for each respective variable. Therefore, caution is advised before deciding to remove these outliers.</p>
+<p>Therefore, instead of a blanket removal, a more selective approach will be adopted. Outliers will be defined as those data points where the distance from the nearest data point is significantly large. An example of this can be seen in the &lsquo;MntMeatProducts&rsquo; variable, where values ranging from 1582 to 1725 are significantly distant from the next lower value of 984. This approach will be uniformly applied to all variables.</p>
+
+    </div>
+  </div>
+
+    <div class="footer">
+  
+  <div class="footer-social">
+    
+      <span class="social-icon social-icon-twitter">
+        <a href="https://twitter.com/zerostaticio" title="twitter" target="_blank" rel="noopener">
+          <img src="/images/social/twitter.svg" width="24" height="24" alt="twitter"/>
+        </a>
+      </span>
+    
+      <span class="social-icon social-icon-github">
+        <a href="https://github.com/zerostaticthemes/hugo-winston-theme" title="github" target="_blank" rel="noopener">
+          <img src="/images/social/github.svg" width="24" height="24" alt="github"/>
+        </a>
+      </span>
+    
+      <span class="social-icon social-icon-linkedin">
+        <a href="https://www.linkedin.com/in/ramdhanhdy" title="linkedin" target="_blank" rel="noopener">
+          <img src="/images/social/linkedin.svg" width="24" height="24" alt="linkedin"/>
+        </a>
+      </span>
+    
+  </div>
+  
+</div>
+  </div>
+
+  
+
+  
+    <script type="text/javascript" src="/js/bundle.min.5993fcb11c07dea925a3fbd58c03c7f1857197c35fccce3aa963a12c0b3c9960.js"></script>
+  
+
+  
+  
+
+  
+  
+  
+    
+  
+
+  
+
+  
+
+</body>
+</html>

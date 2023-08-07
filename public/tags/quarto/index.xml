@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>quarto on Home</title>
+    <link>/tags/quarto/</link>
+    <description>Recent content in quarto on Home</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 06 Apr 2012 00:00:00 +0000</lastBuildDate><atom:link href="/tags/quarto/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hello, Quarto</title>
+      <link>/hello-quarto/</link>
+      <pubDate>Fri, 06 Apr 2012 00:00:00 +0000</pubDate>
+      
+      <guid>/hello-quarto/</guid>
+      <description>Polar Axis For a demonstration of a line plot on a polar axis, see Figure 1.
+Codeimport numpy as np import matplotlib.pyplot as plt r = np.arange(0, 2, 0.01) theta = 2 * np.pi * r fig, ax = plt.subplots(subplot_kw={&amp;#39;projection&amp;#39;: &amp;#39;polar&amp;#39;}) ax.plot(theta, r) ax.set_rticks([0.5, 1, 1.5, 2]) ax.grid(True) plt.show() Figure 1: A line plot on a polar axis</description>
+    </item>
+    
+  </channel>
+</rss>
